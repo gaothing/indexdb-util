@@ -1,21 +1,29 @@
 {
   "name": "@gaothing/indexdb-util",
-  "version": "1.0.1",
-  "description": "a Easier tools for manipulating indexDB",
+  "version": "2.0.0",
+  "description": "对浏览器中缓存indexDB的 API 进行封装，让不熟悉其 api 的同学可以快速上手！",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gaothing/indexdb-util.git"
+  },
   "keywords": [
     "indexDB",
-    "gaothing"
+    "gothing",
+    "indexdb-util",
+    "indexDB-util"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
   "author": "gaothing",
   "license": "ISC",
-  "dependencies": {
-    "@gaothing/indexdb-util": "^1.0.0"
-  }
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bugs": {
+    "url": "https://github.com/gaothing/indexdb-util/issues"
+  },
+  "homepage": "https://github.com/gaothing/indexdb-util#readme"
 }
