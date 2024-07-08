@@ -1,0 +1,21 @@
+{
+  "name": "@gaothing/indexdb-util",
+  "version": "1.0.1",
+  "description": "a Easier tools for manipulating indexDB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "indexDB",
+    "gaothing"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "gaothing",
+  "license": "ISC",
+  "dependencies": {
+    "@gaothing/indexdb-util": "^1.0.0"
+  }
+}
