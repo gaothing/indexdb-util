@@ -1,6 +1,6 @@
 {
   "name": "@gaothing/indexdb-util",
-  "version": "2.0.0",
+  "version": "2.0.2",
   "description": "对浏览器中缓存indexDB的 API 进行封装，让不熟悉其 api 的同学可以快速上手！",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,8 @@
     "indexDB",
     "gothing",
     "indexdb-util",
-    "indexDB-util"
+    "indexDB-util",
+    "本地数据库"
   ],
   "author": "gaothing",
   "license": "ISC",

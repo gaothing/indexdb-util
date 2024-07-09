@@ -184,7 +184,7 @@ const res =  await getByAttr({name:'xxx'})
 
   ```js
 
-  const res =  await getById(1)
+  const res =  await getByKey(1)
 
   ```
 > **deleteByKey**
@@ -197,7 +197,7 @@ const res =  await getByAttr({name:'xxx'})
 
 ```js
 
-const res =  await deleteById(1)
+const res =  await deleteByKey(1)
 
 ```
 
@@ -210,7 +210,7 @@ const res =  await deleteById(1)
 
 ```js
 
-const res =  await updateById({id:1,name:'updatename'})
+const res =  await updateByKey({id:1,name:'updatename'})
 
 ```
 
