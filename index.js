@@ -1,12 +1,15 @@
-export {
+
+import {
   canUse,
   isObject,
   isString,
   isArray,
   getSpace
+} from './utils.js'
+export {
+  canUse,
+  getSpace
 }
-from './utils'
-
 /**
  * 创建一个IndexedDB数据库实例，并根据提供的storeList配置数据库的object stores。
  * 

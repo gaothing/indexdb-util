@@ -24,7 +24,7 @@
 </html>
 <script type="module">
 
-  import { createIndexDB,getSpace } from '../node_modules/@gaothing/indexdb-util/index.js'
+  import { createIndexDB,getSpace } from '../index.js'
   const space= await getSpace()
   console.log(JSON.stringify(space) )
   const {insert,getAll,clear,add,updateByKey,getByKey,getVersion,getByAttr}=await createIndexDB({
@@ -61,9 +61,9 @@ document.querySelector('.save').onclick=async()=>{
   console.log({res})
 }
 document.querySelector('.getList').onclick=async()=>{
-  const list1=await getByAttr({name:"111"},'list')
-  const lists=await getAll('kaka')
-  console.log({list1,lists})
+  // const list1=await getByAttr({name:"111"},'list')
+  const lists=await getAll('list')
+  // console.log({list1,lists})
  document.querySelector('ul').innerHTML=lists.map(item=>`<li>${item.name}</li>`).join('')
 }
 document.querySelector('.clear').onclick=async()=>{
