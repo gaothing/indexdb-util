@@ -1,4 +1,3 @@
-
 import {
   canUse,
   isObject,
@@ -87,7 +86,7 @@ export const createIndexDB = ({
  */
 function _withMethods(instance, storeList) {
   const defaultStoreName = storeList[0].name
-  const defaultKeyPath = storeList[0].keyPath
+  const defaultKeyPath = storeList[0].keyPath || 'id'
   return {
     /**
      * 获取当前数据库下的表名称集合
@@ -192,7 +191,30 @@ function _withMethods(instance, storeList) {
      */
     deleteByKey: async (key, storeName = defaultStoreName) => {
       if (!key) return
-      return await _transaction(instance, storeList, storeName, (store) => store.delete(key))
+      return await _transaction(instance, storeList, storeName, (store) => isArray(key) ? key.forEach(item => store.delete(item)) : store.delete(key))
+    },
+    deleteByKeys: async (keys, storeName = defaultStoreName) => {
+      if (!keys || !isArray(keys)) return
+      await _transaction(instance, storeList, storeName, (store) => {
+        const request = store.openCursor();
+        let keyPath = defaultKeyPath;
+        if (storeName) {
+          const current = storeList.find(item => item.name == storeName)
+          keyPath = current && current.keyPath || defaultKeyPath
+        } else {
+          storeName = defaultStoreName
+        }
+        request.onsuccess = function (event) {
+          const cursor = event.target.result;
+          if (cursor) {
+            if (keys.includes(cursor.value[keyPath])) {
+              store.delete(cursor.key);
+            }
+            cursor.continue();
+          }
+        };
+        return request
+      })
     },
 
     /**

@@ -27,7 +27,7 @@
   import { createIndexDB,getSpace } from '../index.js'
   const space= await getSpace()
   console.log(JSON.stringify(space) )
-  const {insert,getAll,clear,add,updateByKey,getByKey,getVersion,getByAttr}=await createIndexDB({
+  const {insert,getAll,clear,add,updateByKey,getByKey,getVersion,getByAttr,deleteByKeys}=await createIndexDB({
     name:'questionnaire',
     version:1,
     storeList:[{
@@ -57,12 +57,12 @@
   
 }))
 document.querySelector('.save').onclick=async()=>{
-  const res=await add({id:766,name:'111',kkk:678},'list')
+  const res=await insert(list,'list')
   console.log({res})
 }
 document.querySelector('.getList').onclick=async()=>{
   // const list1=await getByAttr({name:"111"},'list')
-  const lists=await getAll('list')
+  const lists=await deleteByKeys([1],'list')
   // console.log({list1,lists})
  document.querySelector('ul').innerHTML=lists.map(item=>`<li>${item.name}</li>`).join('')
 }
