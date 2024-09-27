@@ -42,7 +42,7 @@
   })
   const list = new Array(2000).fill(1).map((_, index) => ({
   index,
-  id:index,
+  id:index+10,
   name: `name${index}`,
   age: Math.floor(Math.random() * 100),
   address: `address ${index}`,
@@ -62,7 +62,7 @@ document.querySelector('.save').onclick=async()=>{
 }
 document.querySelector('.getList').onclick=async()=>{
   // const list1=await getByAttr({name:"111"},'list')
-  const lists=await deleteByKeys([1],'list')
+  const lists=await deleteByKeys([2],'list')
   // console.log({list1,lists})
  document.querySelector('ul').innerHTML=lists.map(item=>`<li>${item.name}</li>`).join('')
 }

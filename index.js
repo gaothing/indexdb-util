@@ -49,9 +49,7 @@ export const createIndexDB = ({
           });
           if (isArray(indexs) && indexs.length) {
             indexs.forEach((item) => {
-              console.log({
-                item
-              })
+
               if (isObject(item) && item.key) {
                 objectStore.createIndex(item.key, item.key, {
                   unique: !!item.unique
@@ -143,9 +141,9 @@ function _withMethods(instance, storeList) {
       return await _transaction(instance, storeList, storeName, (store) => {
         let ret;
         if (Array.isArray(data)) {
-          data.forEach((item) => ret = store.add(item))
+          data.forEach((item) => ret = store.put(item))
         } else {
-          ret = store.add(data)
+          ret = store.put(data)
         }
         return ret
       })
@@ -191,29 +189,19 @@ function _withMethods(instance, storeList) {
      */
     deleteByKey: async (key, storeName = defaultStoreName) => {
       if (!key) return
-      return await _transaction(instance, storeList, storeName, (store) => isArray(key) ? key.forEach(item => store.delete(item)) : store.delete(key))
+      return await _transaction(instance, storeList, storeName, (store) => store.delete(key))
     },
-    deleteByKeys: async (keys, storeName = defaultStoreName) => {
-      if (!keys || !isArray(keys)) return
-      await _transaction(instance, storeList, storeName, (store) => {
-        const request = store.openCursor();
-        let keyPath = defaultKeyPath;
-        if (storeName) {
-          const current = storeList.find(item => item.name == storeName)
-          keyPath = current && current.keyPath || defaultKeyPath
+    deleteByKeys: async (key, storeName = defaultStoreName) => {
+      if (!key) return
+      return await _transaction(instance, storeList, storeName, (store) => {
+        let result;
+        if (isArray(key)) {
+          key.forEach(item => result = store.delete(item))
+
         } else {
-          storeName = defaultStoreName
+          return store.delete(key)
         }
-        request.onsuccess = function (event) {
-          const cursor = event.target.result;
-          if (cursor) {
-            if (keys.includes(cursor.value[keyPath])) {
-              store.delete(cursor.key);
-            }
-            cursor.continue();
-          }
-        };
-        return request
+        return result
       })
     },
 
@@ -238,6 +226,30 @@ function _withMethods(instance, storeList) {
       }
       const result = await _transaction(instance, storeList, storeName, (store) => store.get(data[keyPath]))
       return await _transaction(instance, storeList, storeName, (store) => store.put(Object.assign({}, result, data)))
+    },
+    batchUpdateByKey: async (list, storeName) => {
+      let keyPath = defaultKeyPath;
+      if (storeName) {
+        const current = storeList.find(item => item.name == storeName)
+        keyPath = current && current.keyPath || defaultKeyPath
+      } else {
+        storeName = defaultStoreName
+      }
+      // if (!data[keyPath]) {
+      //   return
+      // }
+      // list.forEach
+      let itemIndex = 0;
+      let ret=null
+      while (itemIndex < list.length) {
+        // 处理每个项目
+        const result = await _transaction(instance, storeList, storeName, (store) => store.get(list[itemIndex][keyPath]))
+        ret=   await _transaction(instance, storeList, storeName, (store) => store.put(Object.assign({}, result?list:{}, list[itemIndex])))
+        itemIndex++;
+      }
+      return ret
+    
+  
     },
     /**
      * 异步清除指定存储空间的数据。
@@ -265,19 +277,23 @@ function _transaction(instance, storeList, storeName, callback, operation = 'rea
   // 返回一个Promise，用于处理操作的成功或失败
   return new Promise((resolve, reject) => {
     // 执行传入的回调函数，进行具体的操作
-    let request = callback(store);
-    // 设置错误处理，触发时拒绝Promise
-    request.onerror = function (event) {
-      reject(`[indexDB] ${event.target.error}`)
-    };
-    // 设置成功处理，触发时解决Promise，并传递结果
-    request.onsuccess = function (event) {
-      resolve(event.target.result)
-    };
+    let request = callback(store, resolve, reject);
+
+
+    if (request) {
+      // 设置成功处理，触发时解决Promise，并传递结果
+      request.onsuccess = function (event) {
+        resolve(event.target.result)
+      };
+      // 设置错误处理，触发时拒绝Promise
+      request.onerror = function (event) {
+        reject(`[indexDB] ${event.target.error}`)
+      };
+    }
     // 事务完成时的处理，关闭数据库连接
     // 提交事务  
     transaction.oncomplete = function (event) {
-      // console.log('transaction complete')
+      resolve(event.target.result)
       // instance.close()
     };
   })
